@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GPA_CALCULATOR</title>
+<style>
+:root{--p:#0d47a1;--pl:#42a5f5;--bg:linear-gradient(135deg,#e3f2fd,#90caf9);--c:#fff;--card:#f8fbff;--input:#fff;--tp:#0d47a1;--ts:#546e7a;--td:#1a237e;--bd:#e3f0fc;--ok:#2e7d32;--bad:#c62828;--warn:#e65100;--info:#00838f;--r:20px}
+[data-theme=dark]{--bg:linear-gradient(135deg,#0a0a1a,#1a1a3e,#0d1b2a);--c:#1a2332;--card:#243044;--input:#1a2332;--tp:#64b5f6;--ts:#b0bec5;--td:#e3f2fd;--bd:#37474f}
+*{box-sizing:border-box;margin:0;padding:0}body{font-family:Arial,sans-serif;background:var(--bg);min-height:100vh;padding:20px;display:flex;justify-content:center;align-items:center;color:var(--td)}
+.container{max-width:900px;width:100%;background:var(--c);border-radius:var(--r);padding:30px 25px 40px;box-shadow:0 20px 60px #0d47a140}
+.header{display:flex;justify-content:space-between;align-items:center;gap:15px;flex-wrap:wrap;border-bottom:2px solid var(--bd);padding-bottom:15px}.header-left{display:flex;align-items:center;gap:15px}.logo-icon{font-size:2.5rem}.logo-text{font-size:2.2rem;font-weight:900;color:var(--tp)}.logo-text span{color:var(--pl)}.subhead{color:var(--ts);margin-top:5px}.header-actions{display:flex;gap:8px}.btn-icon,.btn{border:0;border-radius:50px;padding:9px 18px;cursor:pointer;font-weight:600}.btn-icon{background:var(--card);color:var(--tp);border:1px solid var(--bd)}.header-bottom{text-align:center;margin-top:12px}.btn{color:#fff}.primary{background:var(--p)}.success{background:var(--ok)}.danger{background:var(--bad)}.warning{background:var(--warn)}.info{background:var(--info)}
+.how-to-box{display:none;background:var(--card);border:1px solid var(--bd);border-radius:var(--r);padding:20px;margin-top:20px;color:var(--ts);line-height:1.9}.how-to-box.show{display:block}.how-to-box h3{color:var(--tp);margin-bottom:8px}
+.controls-bar{display:flex;align-items:center;gap:15px;flex-wrap:wrap;background:var(--card);border:1px solid var(--bd);padding:15px 20px;border-radius:12px;margin:20px 0}.controls-bar label{color:var(--tp);font-weight:600}.controls-bar input{width:80px;padding:8px;border:1px solid var(--bd);border-radius:10px;background:var(--input);color:var(--td);text-align:center}
+.subject-grid{display:grid;gap:10px;max-height:500px;overflow:auto;margin:15px 0 20px}.subject-card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:10px 16px;display:grid;grid-template-columns:1.2fr .8fr .8fr;gap:10px}.subject-card label{font-size:.75rem;color:var(--tp);font-weight:600}.subject-card input{width:100%;padding:7px;border:1px solid var(--bd);border-radius:10px;background:var(--input);color:var(--td);margin-top:4px}.subject-number{display:inline-flex;background:var(--p);color:#fff;width:24px;height:24px;border-radius:50%;align-items:center;justify-content:center;margin-right:6px}
+.action-bar{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin:18px 0 25px}
+#result{background:var(--card);border:2px solid var(--bd);border-radius:var(--r);padding:30px 20px;text-align:center}.result-label{color:var(--ts);font-size:1.2rem}.gpa-value{font-size:5rem;font-weight:900;color:var(--tp)}.placeholder{font-size:1.8rem!important;color:var(--ts)!important}
+#summarySection{display:none;margin-top:25px}.table-wrapper{overflow:auto;border:1px solid var(--bd);border-radius:12px}table{width:100%;border-collapse:collapse;background:var(--card)}th{background:var(--p);color:#fff;padding:9px}td{text-align:center;padding:8px;border-bottom:1px solid var(--bd);color:var(--td)}.grade-badge{padding:3px 10px;border-radius:50px;font-weight:bold}.g4{background:#e8f5e9;color:#2e7d32}.g35,.g3{background:#e3f2fd;color:#1565c0}.g25,.g2{background:#fff3e0;color:#e65100}.g15,.g1{background:#fbe9e7;color:#bf360c}.g0{background:#ffebee;color:#b71c1c}
+.toast-container{position:fixed;top:20px;right:20px;z-index:9999;width:min(400px,calc(100% - 40px));display:grid;gap:10px}.toast{background:var(--c);color:var(--td);padding:12px 16px;border-radius:12px;border-left:6px solid var(--bad);box-shadow:0 10px 30px #0003;display:flex;gap:10px;align-items:center}.toast.ok{border-left-color:var(--ok)}.toast button{margin-left:auto;border:0;background:transparent;color:var(--ts);cursor:pointer}
+.confirm-dialog{display:none;position:fixed;inset:0;background:#0008;z-index:99999;align-items:center;justify-content:center}.confirm-dialog.show{display:flex}.dialog-box{background:var(--c);padding:30px;border-radius:20px;width:min(420px,90%);text-align:center}.dialog-icon{font-size:3rem}.dialog-title{font-size:1.3rem;font-weight:bold;color:var(--tp);margin:8px}.dialog-message{color:var(--ts);line-height:1.6;margin-bottom:18px}.dialog-actions{display:flex;gap:10px;justify-content:center}
+@media(max-width:768px){body{padding:10px}.container{padding:15px 12px 25px}.header{flex-direction:column;align-items:flex-start}.header-actions{width:100%}.header-actions>*{flex:1}.subject-card{grid-template-columns:1fr}.action-bar .btn,.header-bottom .btn,.controls-bar .btn{width:100%;justify-content:center}.controls-bar{flex-direction:column;align-items:stretch}.controls-bar label{text-align:center}.controls-bar input{width:100%}.gpa-value{font-size:3.5rem}}
+</style>
+</head>
+<body>
+<div class="toast-container" id="toastContainer"></div>
+<div class="confirm-dialog" id="confirmDialog">
+<div class="dialog-box"><div class="dialog-icon">⚠️</div><div class="dialog-title">ยืนยันการล้างข้อมูล</div><div class="dialog-message">คุณต้องการล้างข้อมูลทั้งหมดที่กรอกไว้ใช่หรือไม่?<br>ข้อมูลที่กรอกจะถูกลบอย่างถาวร</div><div class="dialog-actions"><button class="btn" style="background:transparent;color:var(--tp);border:1px solid var(--bd)" onclick="closeConfirmDialog()">ยกเลิก</button><button class="btn danger" onclick="confirmClearAll()">ล้างข้อมูล</button></div></div>
+</div>
+<div class="container">
+<header class="header"><div class="header-left"><span class="logo-icon">📚</span><div><div class="logo-text">GPA<span>_CALCULATOR</span></div><div class="subhead">🟢 ระบบคำนวณเกรดเฉลี่ย</div></div></div><div class="header-actions"><button class="btn-icon" onclick="toggleTheme()"><span id="themeIcon">🌙</span> <span id="themeText">Dark</span></button><button class="btn-icon" onclick="toggleHowTo()">❓ ช่วยเหลือ</button></div></header>
+<div class="header-bottom"><button class="btn warning" onclick="fillSampleData()">📋 ข้อมูลตัวอย่าง <span id="sampleCountBadge">12</span></button></div>
+<div class="how-to-box" id="howToBox"><h3>📘 คู่มือการใช้งาน</h3><ul><li>📝 จำนวนวิชา 1-20</li><li>✏️ กรอกชื่อวิชา หน่วยกิต และคะแนน</li><li>📌 กดตัดเกรดเฉลี่ย</li><li>📊 ตารางสรุปใช้ได้หลังคำนวณ</li><li>💾 บันทึกอัตโนมัติ</li><li>🌙 Dark Mode จำค่าได้</li></ul></div>
+<div class="controls-bar"><label>📝 จำนวนวิชา: <input type="number" id="subjectCount" value="12" min="1" max="20"></label><button class="btn primary" onclick="updateSubjectCount()">🔄 ปรับจำนวนวิชา</button></div>
+<div class="subject-grid" id="subjectGrid"></div>
+<div class="action-bar"><button class="btn success" onclick="calculateGPA()">📌 ตัดเกรดเฉลี่ย</button><button class="btn danger" onclick="openConfirmDialog()">🗑️ ล้างข้อมูล</button><button class="btn info" onclick="showSummaryTable()">📊 ตารางสรุป</button></div>
+<div id="result"><div class="result-label">🎯 เกรดเฉลี่ยสะสม (GPA)</div><div class="gpa-value placeholder" id="gpaDisplay">รอการคำนวณ</div></div>
+<div id="summarySection"><h3 style="color:var(--tp);margin-bottom:12px">📋 สรุปผลลัพธ์รายวิชา</h3><div class="table-wrapper"><table><thead><tr><th>#</th><th>ชื่อวิชา</th><th>หน่วยกิต</th><th>คะแนน</th><th>เกรดพอยต์</th><th>เกรด</th></tr></thead><tbody id="summaryBody"></tbody></table></div></div>
+</div>
+<script>
+'use strict';
+const DATA='gpa_data',COUNT='gpa_count',THEME='theme';
+const names=['ภาษาไทย','คณิตศาสตร์','วิทยาศาสตร์','ภาษาอังกฤษ','สังคมศึกษา','ประวัติศาสตร์','ภูมิศาสตร์','พลศึกษา','ศิลปะ','ดนตรี','นาฏศิลป์','การงานอาชีพ','เทคโนโลยี','ภาษาจีน','ภาษาญี่ปุ่น','ภาษาเกาหลี','ฟิสิกส์','เคมี','ชีววิทยา','คณิตศาสตร์เพิ่มเติม','ภาษาอังกฤษเพิ่มเติม','สังคมศึกษาเพิ่มเติม','วิทยาศาสตร์เพิ่มเติม','คอมพิวเตอร์','โปรแกรมมิ่ง','การออกแบบ','ธุรกิจ','เศรษฐศาสตร์','กฎหมาย','จิตวิทยา'];
+let subjects=[],lastResults=[],valid=false,count=12;
+const grid=document.getElementById('subjectGrid'),gpa=document.getElementById('gpaDisplay'),summary=document.getElementById('summarySection'),body=document.getElementById('summaryBody'),input=document.getElementById('subjectCount');
+
+function grade(s){return s>=80?4:s>=75?3.5:s>=70?3:s>=65?2.5:s>=60?2:s>=55?1.5:s>=50?1:0}
+function gradeClass(g){return g===4?'g4':g===3.5?'g35':g===3?'g3':g===2.5?'g25':g===2?'g2':g===1.5?'g15':g===1?'g1':'g0'}
+function toast(msg,ok=false,time=3000){const t=document.createElement('div');t.className='toast'+(ok?' ok':'');const x=document.createElement('span');x.textContent=ok?'✅':'⚠️';const m=document.createElement('span');m.textContent=msg;const b=document.createElement('button');b.textContent='✕';b.onclick=()=>t.remove();t.append(x,m,b);document.getElementById('toastContainer').append(t);setTimeout(()=>t.remove(),time)}
+function snapshot(){return subjects.map(s=>({name:s.n.value,credit:s.c.value,score:s.s.value}))}
+function save(){try{localStorage.setItem(DATA,JSON.stringify(snapshot()));localStorage.setItem(COUNT,count)}catch(e){}}
+function invalidate(){valid=false;lastResults=[];summary.style.display='none';gpa.textContent='⏳ กรอกข้อมูล...';gpa.className='gpa-value placeholder'}
+function render(n,data=[]){const old=data.length?data:snapshot();grid.replaceChildren();subjects=[];for(let i=0;i<n;i++){const card=document.createElement('div');card.className='subject-card';card.innerHTML='<label><span><span class="subject-number">'+(i+1)+'</span>ชื่อวิชา</span><input class="n" type="text" placeholder="เช่น คณิตศาสตร์"></label><label>หน่วยกิต <small>0.5-1.5</small><input class="c" type="number" step="0.5" min="0.5" max="1.5"></label><label>คะแนน <small>0-100</small><input class="s" type="number" min="0" max="100"></label>';grid.append(card);const r={n:card.querySelector('.n'),c:card.querySelector('.c'),s:card.querySelector('.s')};if(old[i]){r.n.value=old[i].name||'';r.c.value=old[i].credit||'';r.s.value=old[i].score||''}['n','c','s'].forEach(k=>r[k].addEventListener('input',()=>{invalidate();save()}));subjects.push(r)}count=n;input.value=n;document.getElementById('sampleCountBadge').textContent=n}
+function updateSubjectCount(){let n=parseInt(input.value,10);n=Number.isFinite(n)?Math.max(1,Math.min(20,n)):12;const d=snapshot();render(n,d);save();invalidate();toast('ปรับจำนวนวิชาเป็น '+n+' วิชาเรียบร้อย',true)}
+function calculateGPA(){let total=0,credits=0,res=[],errors=[],incomplete=false;subjects.forEach((s,i)=>{let n=s.n.value.trim(),c=s.c.value.trim(),v=s.s.value.trim();if(!n||!c||!v){incomplete=true;return}c=Number(c);v=Number(v);if(![.5,1,1.5].includes(c)){errors.push('วิชาที่ '+(i+1)+' หน่วยกิตต้องเป็น 0.5, 1.0 หรือ 1.5');return}if(!Number.isFinite(v)||v<0||v>100){errors.push('วิชาที่ '+(i+1)+' คะแนนต้องอยู่ 0-100');return}let g=grade(v);total+=g*c;credits+=c;res.push({name:n,credit:c,score:v,gp:g,grade:g})});if(errors.length){valid=false;gpa.textContent='⚠️ ข้อมูลผิดพลาด';gpa.className='gpa-value';toast(errors.join(' | '),false,5000);return}if(incomplete||res.length!==subjects.length){invalidate();toast('กรุณากรอกข้อมูลให้ครบทุกวิชา');return}let value=total/credits;gpa.textContent=value.toFixed(2);gpa.className='gpa-value';lastResults=res;valid=true;save();toast('คำนวณ GPA สำเร็จ! GPA = '+value.toFixed(2),true)}
+function showSummaryTable(){if(!valid||lastResults.length!==subjects.length){toast('กรุณาคำนวณเกรดก่อน');return}body.replaceChildren();lastResults.forEach((r,i)=>{const tr=document.createElement('tr');[i+1,r.name,r.credit.toFixed(1),r.score,r.gp.toFixed(1)].forEach(v=>{const td=document.createElement('td');td.textContent=v;tr.append(td)});const td=document.createElement('td'),b=document.createElement('span');b.className='grade-badge '+gradeClass(r.gp);b.textContent=r.grade.toFixed(1);td.append(b);tr.append(td);body.append(tr)});summary.style.display='block';summary.scrollIntoView({behavior:'smooth'});toast('แสดงตารางสรุปเรียบร้อย!',true)}
+function fillSampleData(){const cr=[.5,1,1.5];const a=[...names].sort(()=>Math.random()-.5);subjects.forEach((s,i)=>{s.n.value=a[i]||'วิชาที่ '+(i+1);s.c.value=cr[Math.floor(Math.random()*3)];s.s.value=Math.floor(Math.random()*81)+20});invalidate();save();toast('โหลดข้อมูลตัวอย่าง '+count+' วิชาเรียบร้อย!',true)}
+function toggleTheme(){const t=document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark';applyTheme(t,true)}
+function applyTheme(t,saveIt=false){document.documentElement.setAttribute('data-theme',t);document.getElementById('themeIcon').textContent=t==='dark'?'☀️':'🌙';document.getElementById('themeText').textContent=t==='dark'?'Light':'Dark';if(saveIt)localStorage.setItem(THEME,t)}
+function toggleHowTo(){document.getElementById('howToBox').classList.toggle('show')}
+function openConfirmDialog(){document.getElementById('confirmDialog').classList.add('show')}
+function closeConfirmDialog(){document.getElementById('confirmDialog').classList.remove('show')}
+function confirmClearAll(){
+  try{localStorage.removeItem(DATA);localStorage.removeItem(COUNT)}catch(e){}
+  count=12;
+  render(12,[]);
+  subjects.forEach(s=>{s.n.value='';s.c.value='';s.s.value=''});
+  valid=false;
+  lastResults=[];
+  gpa.textContent='รอการคำนวณ';
+  gpa.className='gpa-value placeholder';
+  summary.style.display='none';
+  body.replaceChildren();
+  closeConfirmDialog();
+  toast('ล้างข้อมูลเรียบร้อย',true)
+}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeConfirmDialog();if(e.key==='Enter'&&document.activeElement===input){e.preventDefault();updateSubjectCount()}});
+function init(){applyTheme(localStorage.getItem(THEME)==='dark'?'dark':'light');let n=parseInt(localStorage.getItem(COUNT),10);if(!Number.isFinite(n)||n<1||n>20)n=12;let d=[];try{d=JSON.parse(localStorage.getItem(DATA)||'[]')}catch(e){}render(n,Array.isArray(d)?d:[])}
+init();
+</script>
+</body>
+</html>
